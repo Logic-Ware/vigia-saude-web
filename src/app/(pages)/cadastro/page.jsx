@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import BotaoPadrao from "@/components/BotaoPadrao/botaoPadrao";
+import "./Cadastro.scss";
 
 export default function Cadastro() {
 	const router = useRouter();
@@ -11,8 +12,6 @@ export default function Cadastro() {
 	const [refused, setRefused] = useState(false);
 
 	const [categoria, setCategoria] = useState("");
-
-	//TO DO: Adicionar Placeholders aos campos
 
 	const [formValues, setFormValues] = useState({
 		// Campos comuns a ambas categorias
@@ -55,9 +54,9 @@ export default function Cadastro() {
 				const response = await fetch(
 					`https://brasilapi.com.br/api/cep/v2/${value}`
 				);
-				if(response.ok) {
+				if (response.ok) {
 					const endereco = await response.json();
-	
+
 					setFormValues({
 						...formValues,
 						estado: endereco.state,
@@ -79,8 +78,8 @@ export default function Cadastro() {
 
 	const handleSubmit = (evt) => {
 		evt.preventDefault();
-	
-		if (formValues.cep.length != 8){
+
+		if (formValues.cep.length != 8) {
 			alert("O CEP digitado está incorreto, por favor verifique e tente novamente.")
 		}
 		else {
@@ -217,7 +216,7 @@ export default function Cadastro() {
 									onChange={handleInputChange}
 									readOnly
 									required
-									// Adicionar estilo, se estiver preenchido fica com fundo fracamente colorido
+								// Adicionar estilo, se estiver preenchido fica com fundo fracamente colorido
 								/>
 								<label htmlFor="cidade">Cidade</label>
 								<input
@@ -228,7 +227,7 @@ export default function Cadastro() {
 									onChange={handleInputChange}
 									readOnly
 									required
-									// Adicionar estilo, se estiver preenchido fica com fundo fracamente colorido
+								// Adicionar estilo, se estiver preenchido fica com fundo fracamente colorido
 								/>
 								<label htmlFor="endereco">Endereço</label>
 								<input
@@ -269,7 +268,6 @@ export default function Cadastro() {
 							</>
 						)}
 					</form>
-
 					<span>
 						Já possui uma conta? <Link href={"/login"}>Entrar</Link>
 					</span>
