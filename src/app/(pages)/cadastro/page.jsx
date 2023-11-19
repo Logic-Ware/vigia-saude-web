@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import BotaoPadrao from "@/components/botaoPadrao";
+import BotaoPadrao from "@/components/BotaoPadrao/botaoPadrao";
 
 export default function Cadastro() {
 	const router = useRouter();
