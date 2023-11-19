@@ -5,10 +5,14 @@ $primary-color: #1b325f;
 $secundary-color: #9cc4e4;
 $background-color: #e9f2f9;
 
+* {
+    margin: 0;
+    box-sizing: border-box;
+}
+
 
 body {
     font-family: $font-family;
     color: $primary-color;
     background-color: $background-color;
-    box-sizing: border-box;
 }
