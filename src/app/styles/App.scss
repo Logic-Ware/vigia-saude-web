@@ -1,18 +1,14 @@
-// O objetivo deste arquivo é definir o estilo geral da aplicação, que será aplicado a todas as páginas de estilo, portanto todas as páginas devem conter um import desta página utilizando o método "@use".
+// O objetivo deste arquivo é definir o estilo geral da aplicação, que será aplicado a todas as páginas de estilo. O import deste css é feito diretamente no arquivo "layout.jsx".
 
-$font-family: Helvetica, sans-serif;
-$primary-color: #1b325f;
-$secundary-color: #9cc4e4;
-$background-color: #e9f2f9;
+@use "_variaveis";
 
 * {
     margin: 0;
     box-sizing: border-box;
 }
 
-
 body {
-    font-family: $font-family;
-    color: $primary-color;
-    background-color: $background-color;
+    font-family: variaveis.$font-family;
+    color: variaveis.$primary-color;
+    background-color: variaveis.$background-color;
 }
