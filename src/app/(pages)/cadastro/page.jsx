@@ -15,17 +15,17 @@ export default function Cadastro() {
 	//TO DO: Adicionar Placeholders aos campos
 
 	const [formValues, setFormValues] = useState({
-		// campos comuns a ambas categorias
+		// Campos comuns a ambas categorias
 		nome: "",
 		email: "",
 		telefone: "",
 		senha: "",
 		confirmarSenha: "",
-		// campos específicos de médicos
+		// Campos específicos de médicos
 		especialidade: "",
 		crm: "",
 		hospital: "",
-		// campos específicos de estabelecimentos de saúde
+		// Campos específicos de estabelecimentos de saúde
 		tipo: "",
 		cnes: "",
 		cep: "",
@@ -41,7 +41,7 @@ export default function Cadastro() {
 	const handleInputChange = async (event) => {
 		const { name, value } = event.target;
 
-		if (name === "cep" || (name === "telefone" && !/^\d*$/.test(value))) {
+		if ((name === "cep" || name === "telefone") && !/^\d*$/.test(value)) {
 			return;
 		}
 
@@ -55,25 +55,37 @@ export default function Cadastro() {
 				const response = await fetch(
 					`https://brasilapi.com.br/api/cep/v2/${value}`
 				);
-				const endereco = await response.json();
-
-				setFormValues({
-					...formValues,
-					estado: endereco.state,
-					cidade: endereco.city,
-					endereco: endereco.street,
-					cep: endereco.cep,
-				});
+				if(response.ok) {
+					const endereco = await response.json();
+	
+					setFormValues({
+						...formValues,
+						estado: endereco.state,
+						cidade: endereco.city,
+						endereco: endereco.street,
+						cep: endereco.cep,
+					});
+					alert("inseriu, boa");
+				}
+				else {
+					alert("CEP não encontrado. Por favor, insira um CEP válido.");
+				}
 			} catch (error) {
 				console.error("Erro ao consultar o CEP:", error.message);
-				// Tratar erro, se necessário
+				alert("Erro ao consultar o CEP. Tente novamente mais tarde.");
 			}
 		}
 	};
 
 	const handleSubmit = (evt) => {
 		evt.preventDefault();
-		console.log("Categoria selecionada:", categoria);
+	
+		if (formValues.cep.length != 8){
+			alert("O CEP digitado está incorreto, por favor verifique e tente novamente.")
+		}
+		else {
+			console.log("Cadastro feito com sucesso.");
+		}
 	};
 	return (
 		<>
@@ -109,6 +121,7 @@ export default function Cadastro() {
 									type="text"
 									id="nome"
 									name="nome"
+									placeholder="Insira o nome completo"
 									value={formValues.nome}
 									onChange={handleInputChange}
 									required
@@ -119,6 +132,7 @@ export default function Cadastro() {
 									type="email"
 									id="email"
 									name="email"
+									placeholder="Este é o email que você usará para fazer o login"
 									value={formValues.email}
 									onChange={handleInputChange}
 									required
@@ -126,9 +140,10 @@ export default function Cadastro() {
 
 								<label htmlFor="telefone">Telefone:</label>
 								<input
-									type="tel"
+									type="text"
 									id="telefone"
 									name="telefone"
+									placeholder="Insira o telefone para contato"
 									value={formValues.telefone}
 									onChange={handleInputChange}
 									maxLength="11"
@@ -145,6 +160,7 @@ export default function Cadastro() {
 									type="text"
 									id="crm"
 									name="crm"
+									placeholder="Registro no Conselho Regional de Medicina"
 									value={formValues.crm}
 									onChange={handleInputChange}
 									required
@@ -164,14 +180,21 @@ export default function Cadastro() {
 									required
 								>
 									{/* Opções para tipo de hospital */}
+									<option value="" disabled>
+										Escolha um tipo
+									</option>
+									<option value="Teste">Teste</option>
+									{/* Para essas opções, farei uma lista separada e inserirei aqui uma lógica com for para criar todos os options de uma vez */}
 								</select>
 								<label htmlFor="cnes">CNES:</label>
 								<input
 									type="text"
 									id="cnes"
 									name="cnes"
+									placeholder="Registro no Cadastro Nacional de Estabelecimentos de Saúde"
 									value={formValues.cnes}
 									onChange={handleInputChange}
+									maxLength="7"
 									required
 								/>
 								<label htmlFor="cep">CEP</label>
@@ -179,6 +202,7 @@ export default function Cadastro() {
 									type="text"
 									id="cep"
 									name="cep"
+									placeholder="Insira o CEP da unidade"
 									value={formValues.cep}
 									onChange={handleInputChange}
 									maxLength="8"
@@ -211,6 +235,7 @@ export default function Cadastro() {
 									type="text"
 									id="endereco"
 									name="endereco"
+									placeholder="Insira o endereço completo (incluindo número)"
 									value={formValues.endereco}
 									onChange={handleInputChange}
 									required
@@ -224,6 +249,7 @@ export default function Cadastro() {
 								<input
 									type="password"
 									name="senha"
+									placeholder="Escolha uma senha forte"
 									value={formValues.senha}
 									onChange={handleInputChange}
 									required
@@ -233,6 +259,7 @@ export default function Cadastro() {
 								<input
 									type="password"
 									name="confirmarSenha"
+									placeholder="Confirme sua senha"
 									value={formValues.confirmarSenha}
 									onChange={handleInputChange}
 									required
