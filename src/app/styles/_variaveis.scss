@@ -1,0 +1,8 @@
+// Esse arquivo define variáveis gerais de estilo que podem ser aplicadas em todo o projeto
+// Para utilizar alguma das variáveis definidas aqui, deve-se importar o arquivo utilizando "@use "./src/app/styles/_variables";"
+// Então, para acessar a variável desejada basta usar: "variaveis.$nome_da_variavel"
+
+$font-family: Helvetica, sans-serif;
+$primary-color: #1b325f;
+$secondary-color: #6796bd;
+$background-color: #e9f2f9;
