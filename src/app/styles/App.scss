@@ -1,0 +1,14 @@
+// O objetivo deste arquivo é definir o estilo geral da aplicação, que será aplicado a todas as páginas de estilo. O import deste css é feito diretamente no arquivo "layout.jsx".
+
+@use "_variaveis";
+
+* {
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: variaveis.$font-family;
+    color: variaveis.$primary-color;
+    background-color: variaveis.$background-color;
+}
