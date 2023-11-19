@@ -1,0 +1,13 @@
+@use "./src/app/styles/_variaveis";
+
+button {
+    margin: 1rem 0;
+    padding: 0.5rem 1rem;
+    background-color: variaveis.$secondary-color;
+    border-color: variaveis.$primary-color;
+    border-radius: 0.2rem;
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 1.25rem;
+    border-style: solid;
+}
