@@ -15,6 +15,25 @@ export default function BarraNav() {
                 alt="Logo do Vigia Saúde"
                 />
             </Link>
+
+            <ul class="lista-nav">
+                <li>
+                    <Link href={'/consultar-doenca'}>Consultar Doença</Link>
+                </li>
+                <li>
+                    <Link href={'/contato'}>Contato</Link>
+                </li>
+                <li>
+                    <Link href={'/registrar-casos'}>Registrar Casos</Link>
+                </li>
+                <li>
+                    <Link href={'/cadastro'}>Cadastrar</Link>
+                </li>
+                <li>
+                    <Link href={'/login'}>Entrar</Link>
+                </li>
+                
+            </ul>
         </nav>
         </>
     )
