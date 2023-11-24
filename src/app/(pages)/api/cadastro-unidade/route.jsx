@@ -26,7 +26,7 @@ export async function POST(req) {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(medico),
+        body: JSON.stringify(unidade),
     })
     try {
         response = await response

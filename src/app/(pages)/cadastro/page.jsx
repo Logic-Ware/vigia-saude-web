@@ -1,7 +1,7 @@
 "use client";
 // import { IoArrowBack } from 'react-icons/io5'
 import Link from "next/link";
-import { useState } from "react";
+import { useState , useEffect } from "react";
 import { useRouter } from "next/navigation";
 import BotaoPadrao from "@/components/BotaoPadrao/botaoPadrao";
 import "./Cadastro.scss";
@@ -10,8 +10,11 @@ export default function Cadastro() {
 	const router = useRouter();
 	const [error, setError] = useState(false);
 	const [refused, setRefused] = useState(false);
-
+	const [invalid, setInvalid] = useState(false);
 	const [categoria, setCategoria] = useState("");
+
+	const [tipos, setTipos] = useState([]);
+	const [unidades, setUnidades] = useState([]);
 
 	const [formValues, setFormValues] = useState({
 		// Campos comuns a ambas categorias
@@ -23,7 +26,7 @@ export default function Cadastro() {
 		// Campos específicos de médicos
 		especialidade: "",
 		crm: "",
-		hospital: "",
+		unidade: "",
 		// Campos específicos de estabelecimentos de saúde
 		tipo: "",
 		cnes: "",
@@ -36,6 +39,33 @@ export default function Cadastro() {
 	const handleCategoriaChange = (evt) => {
 		setCategoria(evt.target.value);
 	};
+
+	useEffect(() => {
+		// Função para buscar os tipos da API
+		const fetchTipos = async () => {
+		  try {
+			const response = await fetch('api/tipo');
+			const data = await response.json();
+			setTipos(data.tipos);
+		  } catch (error) {
+			console.error('Erro ao buscar tipos:', error);
+		  }
+		};
+
+		const fetchUnidades = async () => {
+			try {
+			  const response = await fetch('api/unidades');
+			  const data = await response.json();
+			  setUnidades(data.unidades);
+			} catch (error) {
+			  console.error('Erro ao buscar unidades:', error);
+			}
+		};
+		
+		// Chamando a função de busca quando o componente monta
+		fetchTipos();
+		fetchUnidades();
+	  }, []);
 
 	const handleInputChange = async (event) => {
 		const { name, value } = event.target;
@@ -83,6 +113,9 @@ export default function Cadastro() {
 			);
 		} else {
 			if (categoria === "medico") {
+				const unidadeObj = {
+					id: parseInt(formValues.unidade, 10),
+				};
 				const formValuesEnviar = {
 					nome: formValues.nome,
 					email: formValues.email,
@@ -90,7 +123,9 @@ export default function Cadastro() {
 					telefone: formValues.telefone,
 					especialidade: formValues.especialidade,
 					crm: formValues.crm,
+					unidade: unidadeObj,
 				};
+				console.log(formValuesEnviar);
 				try {
 					const response = await fetch("api/cadastro-medico", {
 						method: "POST",
@@ -125,6 +160,9 @@ export default function Cadastro() {
 					console.error("Erro ao cadastrar:", error);
 				}
 			} else if (categoria === "estabelecimentoSaude") {
+				const tipoObj = {
+					id: parseInt(formValues.tipo, 10),
+				};
 				const formValuesEnviar = {
 					nome: formValues.nome,
 					email: formValues.email,
@@ -135,8 +173,10 @@ export default function Cadastro() {
 					estado: formValues.estado,
 					cidade: formValues.cidade,
 					cnes: formValues.cnes,
-					tipo: formValues.tipo,
+					tipo: tipoObj,
+
 				};
+				console.log(formValuesEnviar);
 				try {
 					const response = await fetch("api/cadastro-unidade", {
 						method: "POST",
@@ -262,6 +302,26 @@ export default function Cadastro() {
 									onChange={handleInputChange}
 									required
 								/>
+								<label htmlFor="unidade">Unidade onde trabalha:</label>
+								<select
+								name="unidade"
+								id="unidade"
+								value={formValues.unidade}
+								onChange={handleInputChange}
+								required
+								>
+								{/* Opções para tipo de unidade */}
+								<option value="" disabled>
+									Escolha uma unidade
+								</option>
+
+								{/* Mapeando a lista de tipos para gerar as opções dinamicamente */}
+								{unidades.map((unidade) => (
+									<option key={unidade.id} value={unidade.id}>
+									{unidade.nome}
+									</option>
+								))}
+								</select>
 							</>
 						)}
 
@@ -270,38 +330,23 @@ export default function Cadastro() {
 							<>
 								<label htmlFor="tipo">Tipo:</label>
 								<select
-									name="tipo"
-									id="tipo"
-									value={formValues.tipo}
-									onChange={handleInputChange}
-									required
+								name="tipo"
+								id="tipo"
+								value={formValues.tipo}
+								onChange={handleInputChange}
+								required
 								>
-									{/* Opções para tipo de hospital */}
-									<option value="" disabled>
-										Escolha um tipo
+								{/* Opções para tipo de unidade */}
+								<option value="" disabled>
+									Escolha um tipo
+								</option>
+
+								{/* Mapeando a lista de tipos para gerar as opções dinamicamente */}
+								{tipos.map((tipo) => (
+									<option key={tipo.id} value={tipo.id}>
+									{tipo.descricao}
 									</option>
-									<option value="1">Hospital Geral</option>
-									<option value="2">Unidade Básica de Saúde</option>
-									<option value="3">
-										Unidade de Saúde da Família
-									</option>
-									<option value="4">
-										Unidade de Pronto Atendimento
-									</option>
-									<option value="5">Hospital Especializado</option>
-									<option value="6">Maternidade</option>
-									<option value="7">
-										CAPS - Centro de Atenção Psicossocial
-									</option>
-									<option value="8">
-										Laboratório de Análises Clínicas
-									</option>
-									<option value="9">
-										Centro de Referência em Saúde do Trabalhador
-									</option>
-									<option value="10">
-										Clínica de Especialidades Odontológicas
-									</option>
+								))}
 								</select>
 								<label htmlFor="cnes">CNES:</label>
 								<input
