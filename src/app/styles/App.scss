@@ -12,3 +12,17 @@ body {
     color: variaveis.$primary-color;
     background-color: variaveis.$background-color;
 }
+
+main {
+    width: 90%;
+    margin: 1rem auto
+}
+
+
+input {
+    display: block;
+}
+
+label {
+    display: block;
+}
