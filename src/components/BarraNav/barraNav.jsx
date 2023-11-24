@@ -9,27 +9,27 @@ export default function BarraNav() {
         <nav>
             <Link href="">
                 <Image
-                width={50}
-                height={50}
+                width={100}
+                height={100}
                 src={logoVigiaSaude}
                 alt="Logo do Vigia Saúde"
                 />
             </Link>
 
             <ul class="lista-nav">
-                <li>
+                <li class="links">
                     <Link href={'/consultar-doenca'}>Consultar Doença</Link>
                 </li>
-                <li>
+                <li class="links">
                     <Link href={'/contato'}>Contato</Link>
                 </li>
-                <li>
+                <li class="links">
                     <Link href={'/registrar-casos'}>Registrar Casos</Link>
                 </li>
-                <li>
+                <li class="links">
                     <Link href={'/cadastro'}>Cadastrar</Link>
                 </li>
-                <li>
+                <li class="links">
                     <Link href={'/login'}>Entrar</Link>
                 </li>
                 
