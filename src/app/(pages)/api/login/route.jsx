@@ -9,7 +9,8 @@ export async function POST(req) {
         email,
         senha,
     }
-    const loginEndPoint = `http://localhost:8080/vigiasaude/webapi/login/medico`
+    const categoria = req.params.categoria;
+    const loginEndPoint = `http://localhost:8080/vigiasaude/webapi/login/${categoria}`
     let returnMsg = ''
     let response = await fetch(loginEndPoint, {
         method: 'POST',
