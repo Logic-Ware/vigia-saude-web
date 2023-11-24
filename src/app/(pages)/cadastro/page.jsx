@@ -64,7 +64,6 @@ export default function Cadastro() {
 						endereco: endereco.street,
 						cep: endereco.cep,
 					});
-					alert("inseriu, boa");
 				}
 				else {
 					alert("CEP não encontrado. Por favor, insira um CEP válido.");
@@ -76,16 +75,58 @@ export default function Cadastro() {
 		}
 	};
 
-	const handleSubmit = (evt) => {
+	const handleSubmit = async (evt) => {
 		evt.preventDefault();
-
-		if (formValues.cep.length != 8) {
-			alert("O CEP digitado está incorreto, por favor verifique e tente novamente.")
-		}
-		else {
+	
+		
+		if (formValues.cep.length !== 8 && categoria === 'estabelecimentoSaude') {
+			alert("O CEP digitado está incorreto, por favor verifique e tente novamente.");
+		} else if (categoria === 'medico') {
+			try {
+				const formValuesMedico = {
+					nome: formValues.nome,
+					email: formValues.email,
+					senha: formValues.senha,
+					telefone: formValues.telefone,
+					especialidade: formValues.especialidade,
+					crm: formValues.crm
+				}
+				const response = await fetch('api/cadastro-medico', {
+					method: 'POST',
+					body: JSON.stringify(formValuesMedico),
+				});
+	
+				console.log(formValuesMedico);
+	
+				/**
+				 * @type {{msg: "ok" | "invalid" | "used" | "refused" | "error"}}
+				 */
+				const data = await response.json();
+	
+				if (data.msg === 'ok') {
+					localStorage.setItem('formValues', JSON.stringify(formValues));
+					router.push('/');
+				} else if (data.msg === 'invalid') {
+					setInvalid(true);
+				} else if (data.msg === 'used') {
+					setUsed(true);
+				} else if (data.msg === 'refused') {
+					setRefused(true);
+				} else {
+					// Erro
+					setError(true);
+					console.error("Erro ao cadastrar. Status:", response ? response.status : "unknown");
+				}
+			} catch (error) {
+				console.error("Erro ao cadastrar:", error);
+			}
+	
 			console.log("Cadastro feito com sucesso.");
 		}
 	};
+	
+
+
 	return (
 		<>
 			<main>
@@ -161,6 +202,16 @@ export default function Cadastro() {
 									name="crm"
 									placeholder="Registro no Conselho Regional de Medicina"
 									value={formValues.crm}
+									onChange={handleInputChange}
+									required
+								/>
+								<label htmlFor="especialidade">Especialidade:</label>
+								<input
+									type="text"
+									id="especialidade"
+									name="especialidade"
+									placeholder="Qual é sua especialidade?"
+									value={formValues.especialidade}
 									onChange={handleInputChange}
 									required
 								/>

@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server'
  * @param {NextRequest} req
  */
 export async function POST(req) {
-    const { nome, email, senha, telefone, especialidade, crm, unidade } = await req.json();
+    const { nome, email, senha, telefone, especialidade, crm,} = await req.json();
     const medico = {
         nome,
         email,
@@ -12,7 +12,6 @@ export async function POST(req) {
         telefone,
         especialidade,
         crm,
-        unidade,
     }
     const endPoint = `http://localhost:8080/vigiasaude/webapi/medico/cadastro`
     let returnMsg = ''
