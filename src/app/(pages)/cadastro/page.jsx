@@ -64,8 +64,7 @@ export default function Cadastro() {
 						endereco: endereco.street,
 						cep: endereco.cep,
 					});
-				}
-				else {
+				} else {
 					alert("CEP não encontrado. Por favor, insira um CEP válido.");
 				}
 			} catch (error) {
@@ -77,55 +76,103 @@ export default function Cadastro() {
 
 	const handleSubmit = async (evt) => {
 		evt.preventDefault();
-	
-		
-		if (formValues.cep.length !== 8 && categoria === 'estabelecimentoSaude') {
-			alert("O CEP digitado está incorreto, por favor verifique e tente novamente.");
-		} else if (categoria === 'medico') {
-			try {
-				const formValuesMedico = {
+
+		if (formValues.cep.length !== 8 && categoria === "estabelecimentoSaude") {
+			alert(
+				"O CEP digitado está incorreto, por favor verifique e tente novamente."
+			);
+		} else {
+			if (categoria === "medico") {
+				const formValuesEnviar = {
 					nome: formValues.nome,
 					email: formValues.email,
 					senha: formValues.senha,
 					telefone: formValues.telefone,
 					especialidade: formValues.especialidade,
-					crm: formValues.crm
+					crm: formValues.crm,
+				};
+				try {
+					const response = await fetch("api/cadastro-medico", {
+						method: "POST",
+						body: JSON.stringify(formValuesEnviar),
+					});
+					/**
+					 * @type {{msg: "ok" | "invalid" | "used" | "refused" | "error"}}
+					 */
+					const data = await response.json();
+
+					if (data.msg === "ok") {
+						localStorage.setItem(
+							"formValues",
+							JSON.stringify(formValues)
+						);
+						router.push("/");
+					} else if (data.msg === "invalid") {
+						setInvalid(true);
+					} else if (data.msg === "used") {
+						setUsed(true);
+					} else if (data.msg === "refused") {
+						setRefused(true);
+					} else {
+						// Erro
+						setError(true);
+						console.error(
+							"Erro ao cadastrar. Status:",
+							response ? response.status : "unknown"
+						);
+					}
+				} catch (error) {
+					console.error("Erro ao cadastrar:", error);
 				}
-				const response = await fetch('api/cadastro-medico', {
-					method: 'POST',
-					body: JSON.stringify(formValuesMedico),
-				});
-	
-				console.log(formValuesMedico);
-	
-				/**
-				 * @type {{msg: "ok" | "invalid" | "used" | "refused" | "error"}}
-				 */
-				const data = await response.json();
-	
-				if (data.msg === 'ok') {
-					localStorage.setItem('formValues', JSON.stringify(formValues));
-					router.push('/');
-				} else if (data.msg === 'invalid') {
-					setInvalid(true);
-				} else if (data.msg === 'used') {
-					setUsed(true);
-				} else if (data.msg === 'refused') {
-					setRefused(true);
-				} else {
-					// Erro
-					setError(true);
-					console.error("Erro ao cadastrar. Status:", response ? response.status : "unknown");
+			} else if (categoria === "estabelecimentoSaude") {
+				const formValuesEnviar = {
+					nome: formValues.nome,
+					email: formValues.email,
+					senha: formValues.senha,
+					telefone: formValues.telefone,
+					endereco: formValues.endereco,
+					cep: formValues.cep,
+					estado: formValues.estado,
+					cidade: formValues.cidade,
+					cnes: formValues.cnes,
+					tipo: formValues.tipo,
+				};
+				try {
+					const response = await fetch("api/cadastro-unidade", {
+						method: "POST",
+						body: JSON.stringify(formValuesEnviar),
+					});
+					/**
+					 * @type {{msg: "ok" | "invalid" | "used" | "refused" | "error"}}
+					 */
+					const data = await response.json();
+
+					if (data.msg === "ok") {
+						localStorage.setItem(
+							"formValues",
+							JSON.stringify(formValues)
+						);
+						router.push("/");
+					} else if (data.msg === "invalid") {
+						setInvalid(true);
+					} else if (data.msg === "used") {
+						setUsed(true);
+					} else if (data.msg === "refused") {
+						setRefused(true);
+					} else {
+						// Erro
+						setError(true);
+						console.error(
+							"Erro ao cadastrar. Status:",
+							response ? response.status : "unknown"
+						);
+					}
+				} catch (error) {
+					console.error("Erro ao cadastrar:", error);
 				}
-			} catch (error) {
-				console.error("Erro ao cadastrar:", error);
 			}
-	
-			console.log("Cadastro feito com sucesso.");
 		}
 	};
-	
-
 
 	return (
 		<>
@@ -233,8 +280,28 @@ export default function Cadastro() {
 									<option value="" disabled>
 										Escolha um tipo
 									</option>
-									<option value="Teste">Teste</option>
-									{/* Para essas opções, farei uma lista separada e inserirei aqui uma lógica com for para criar todos os options de uma vez */}
+									<option value="1">Hospital Geral</option>
+									<option value="2">Unidade Básica de Saúde</option>
+									<option value="3">
+										Unidade de Saúde da Família
+									</option>
+									<option value="4">
+										Unidade de Pronto Atendimento
+									</option>
+									<option value="5">Hospital Especializado</option>
+									<option value="6">Maternidade</option>
+									<option value="7">
+										CAPS - Centro de Atenção Psicossocial
+									</option>
+									<option value="8">
+										Laboratório de Análises Clínicas
+									</option>
+									<option value="9">
+										Centro de Referência em Saúde do Trabalhador
+									</option>
+									<option value="10">
+										Clínica de Especialidades Odontológicas
+									</option>
 								</select>
 								<label htmlFor="cnes">CNES:</label>
 								<input
@@ -267,7 +334,7 @@ export default function Cadastro() {
 									onChange={handleInputChange}
 									readOnly
 									required
-								// Adicionar estilo, se estiver preenchido fica com fundo fracamente colorido
+									// Adicionar estilo, se estiver preenchido fica com fundo fracamente colorido
 								/>
 								<label htmlFor="cidade">Cidade</label>
 								<input
@@ -278,7 +345,7 @@ export default function Cadastro() {
 									onChange={handleInputChange}
 									readOnly
 									required
-								// Adicionar estilo, se estiver preenchido fica com fundo fracamente colorido
+									// Adicionar estilo, se estiver preenchido fica com fundo fracamente colorido
 								/>
 								<label htmlFor="endereco">Endereço</label>
 								<input
