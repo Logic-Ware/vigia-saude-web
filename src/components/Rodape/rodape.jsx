@@ -15,28 +15,27 @@ export default function Rodape() {
                 <p>Sabrina Faustino do Prado - rm99570</p>
             </div>
 
-            <div class="logo-rodape">
-                <Image
+                <Image class="logo-rodape"
                     width={90}
                     height={50}
                     src={logoFiap}
                     alt="Logo da Fiap"
                 />
                 
-                <Image
+                <Image class="logo-rodape"
                     width={90}
                     height={50}
                     src={logoNotreDame}
                     alt="Logo da NotreDame"
                 />
 
-                <Image
+                <Image class="logo-rodape"
                     width={90}
                     height={50}
                     src={logoHapvida}
                     alt="Logo da Hapvida"
                 />
-            </div>
+
 
         </footer>
         </>
