@@ -1,6 +1,6 @@
 'use client'
 
-import { IoArrowBack } from 'react-icons/io5'
+// import { IoArrowBack } from 'react-icons/io5'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useState } from 'react'
@@ -9,8 +9,15 @@ export default function Login() {
     const router = useRouter()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [unauthorized, setUnauthorized] = useState(false)
     const [error, setError] = useState(false)
     const [refused, setRefused] = useState(false)
+	const [categoria, setCategoria] = useState("");
+
+    const handleCategoriaChange = (evt) => {
+		setCategoria(evt.target.value);
+	};
+
     const onSubmit = async e => {
         e.preventDefault()
         setError(false)
@@ -19,28 +26,30 @@ export default function Login() {
             email,
             senha: password,
         }
-        const req = await fetch('/api/login', {
+        const loginEndPoint = `http://localhost:8080/vigiasaude/webapi/login/${categoria}`
+        let response = await fetch(loginEndPoint, {
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
             body: JSON.stringify(user),
         })
-        /**
-         * @type {{msg: "ok" | "refused" | "error"}}
-         */
-        const data = await req.json()
-        if (data.msg === 'ok') {
+        try {
+        response = await response
+        const data = await response.text()
+        if (response.status === 200) {
             localStorage.setItem('user', JSON.stringify(user))
             router.push('/')
-        }
-        if (data.msg === 'refused') {
+        } else if (response.status === 401) {
+            setUnauthorized(true)
+        } else {
             setRefused(true)
         }
-        if (data.msg === 'error') {
+        } catch (e) {
             setError(true)
-            console.error(
-                'Erro no login, por favor tenha certeza que o servidor java está rodando normalmente, link do repositório do servidor: https://github.com/Nexio-Corp/porto-java'
-            )
         }
-        console.log(data, email, password)
+        console.log(user)
+
     }
     return (
         <>
@@ -48,18 +57,36 @@ export default function Login() {
                 <section>
                     <h1>Bem-vindo(a) de volta</h1>
                     <form action="#" onSubmit={onSubmit}>
-                        <input
-                            type="text"
-                            placeholder="Email"
-                            onChange={e => setEmail(e.target.value)}
-                        />
-                        <input
-                            type="password"
-                            placeholder="Senha"
-                            onChange={e => setPassword(e.target.value)}
-                        />
-                        <a href="#">Esqueceu a senha?</a>
-                        <button type="submit">Entrar</button>
+                    <select
+							name="Categoria"
+							id="cadastroSelectCategoria"
+							onChange={handleCategoriaChange}
+							value={categoria}
+						>
+							<option value="" disabled>
+								Escolha uma categoria
+							</option>
+							<option value="unidade">
+								Estabelecimento de Saúde
+							</option>
+							<option value="medico">Médico(a)</option>
+						</select>
+                        {categoria != "" && (
+                        <>
+                            <input
+                                type="text"
+                                placeholder="Email"
+                                onChange={e => setEmail(e.target.value)}
+                            />
+                            <input
+                                type="password"
+                                placeholder="Senha"
+                                onChange={e => setPassword(e.target.value)}
+                            />
+                            <a href="#">Esqueceu a senha?</a>
+                            <button type="submit">Entrar</button>
+                        </>
+                        )}
                     </form>
                     <span>
                         Não tem uma conta ainda?{' '}

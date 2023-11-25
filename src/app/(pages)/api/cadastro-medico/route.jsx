@@ -4,29 +4,37 @@ import { NextRequest, NextResponse } from 'next/server'
  * @param {NextRequest} req
  */
 export async function POST(req) {
-    const { email, senha } = await req.json()
-    const user = {
+    const { nome, email, senha, telefone, especialidade, crm, unidade,} = await req.json();
+    const medico = {
+        nome,
         email,
         senha,
+        telefone,
+        especialidade,
+        crm,
+        unidade,
     }
-    const categoria = req.params.categoria;
-    const loginEndPoint = `http://localhost:8080/vigiasaude/webapi/login/${categoria}`
+    const endPoint = `http://localhost:8080/vigiasaude/webapi/medico/cadastro`
     let returnMsg = ''
-    let response = await fetch(loginEndPoint, {
+
+    let response = fetch(endPoint, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(user),
+        body: JSON.stringify(medico),
     })
     try {
         response = await response
-        const data = await response.text()
         if (response.status === 200) {
             returnMsg = 'ok'
-        } else if (response.status === 401) {
-            returnMsg = 'unauthorized';
-        } else {
+        } 
+        else if (response.status === 409) {
+            returnMsg = 'used'
+        } 
+        else if (response.status === 400) {
+            returnMsg = 'invalid'
+        }else {
             returnMsg = 'refused'
         }
     } catch (e) {
