@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useState , useEffect } from "react";
 import { useRouter } from "next/navigation";
 import BotaoPadrao from "@/components/BotaoPadrao/botaoPadrao";
 import "./Cadastro.scss";
@@ -9,8 +9,11 @@ export default function Cadastro() {
 	const router = useRouter();
 	const [error, setError] = useState(false);
 	const [refused, setRefused] = useState(false);
-
+	const [invalid, setInvalid] = useState(false);
 	const [categoria, setCategoria] = useState("");
+
+	const [tipos, setTipos] = useState([]);
+	const [unidades, setUnidades] = useState([]);
 
 	const [formValues, setFormValues] = useState({
 		// Campos comuns a ambas categorias
@@ -22,7 +25,7 @@ export default function Cadastro() {
 		// Campos específicos de médicos
 		especialidade: "",
 		crm: "",
-		hospital: "",
+		unidade: "",
 		// Campos específicos de estabelecimentos de saúde
 		tipo: "",
 		cnes: "",
@@ -35,6 +38,33 @@ export default function Cadastro() {
 	const handleCategoriaChange = (evt) => {
 		setCategoria(evt.target.value);
 	};
+
+	useEffect(() => {
+		// Função para buscar os tipos da API
+		const fetchTipos = async () => {
+		  try {
+			const response = await fetch('api/tipo');
+			const data = await response.json();
+			setTipos(data.tipos);
+		  } catch (error) {
+			console.error('Erro ao buscar tipos:', error);
+		  }
+		};
+
+		const fetchUnidades = async () => {
+			try {
+			  const response = await fetch('api/unidades');
+			  const data = await response.json();
+			  setUnidades(data.unidades);
+			} catch (error) {
+			  console.error('Erro ao buscar unidades:', error);
+			}
+		};
+		
+		// Chamando a função de busca quando o componente monta
+		fetchTipos();
+		fetchUnidades();
+	  }, []);
 
 	const handleInputChange = async (event) => {
 		const { name, value } = event.target;
@@ -63,9 +93,7 @@ export default function Cadastro() {
 						endereco: endereco.street,
 						cep: endereco.cep,
 					});
-					alert("inseriu, boa");
-				}
-				else {
+				} else {
 					alert("CEP não encontrado. Por favor, insira um CEP válido.");
 				}
 			} catch (error) {
@@ -75,16 +103,116 @@ export default function Cadastro() {
 		}
 	};
 
-	const handleSubmit = (evt) => {
+	const handleSubmit = async (evt) => {
 		evt.preventDefault();
 
-		if (formValues.cep.length != 8) {
-			alert("O CEP digitado está incorreto, por favor verifique e tente novamente.")
-		}
-		else {
-			console.log("Cadastro feito com sucesso.");
+		if (formValues.cep.length !== 8 && categoria === "estabelecimentoSaude") {
+			alert(
+				"O CEP digitado está incorreto, por favor verifique e tente novamente."
+			);
+		} else {
+			if (categoria === "medico") {
+				const unidadeObj = {
+					id: parseInt(formValues.unidade, 10),
+				};
+				const formValuesEnviar = {
+					nome: formValues.nome,
+					email: formValues.email,
+					senha: formValues.senha,
+					telefone: formValues.telefone,
+					especialidade: formValues.especialidade,
+					crm: formValues.crm,
+					unidade: unidadeObj,
+				};
+				console.log(formValuesEnviar);
+				try {
+					const response = await fetch("api/cadastro-medico", {
+						method: "POST",
+						body: JSON.stringify(formValuesEnviar),
+					});
+					/**
+					 * @type {{msg: "ok" | "invalid" | "used" | "refused" | "error"}}
+					 */
+					const data = await response.json();
+
+					if (data.msg === "ok") {
+						localStorage.setItem(
+							"formValues",
+							JSON.stringify(formValues)
+						);
+						router.push("/");
+					} else if (data.msg === "invalid") {
+						setInvalid(true);
+					} else if (data.msg === "used") {
+						setUsed(true);
+					} else if (data.msg === "refused") {
+						setRefused(true);
+					} else {
+						// Erro
+						setError(true);
+						console.error(
+							"Erro ao cadastrar. Status:",
+							response ? response.status : "unknown"
+						);
+					}
+				} catch (error) {
+					console.error("Erro ao cadastrar:", error);
+				}
+			} else if (categoria === "estabelecimentoSaude") {
+				const tipoObj = {
+					id: parseInt(formValues.tipo, 10),
+				};
+				const formValuesEnviar = {
+					nome: formValues.nome,
+					email: formValues.email,
+					senha: formValues.senha,
+					telefone: formValues.telefone,
+					endereco: formValues.endereco,
+					cep: formValues.cep,
+					estado: formValues.estado,
+					cidade: formValues.cidade,
+					cnes: formValues.cnes,
+					tipo: tipoObj,
+
+				};
+				console.log(formValuesEnviar);
+				try {
+					const response = await fetch("api/cadastro-unidade", {
+						method: "POST",
+						body: JSON.stringify(formValuesEnviar),
+					});
+					/**
+					 * @type {{msg: "ok" | "invalid" | "used" | "refused" | "error"}}
+					 */
+					const data = await response.json();
+
+					if (data.msg === "ok") {
+						localStorage.setItem(
+							"formValues",
+							JSON.stringify(formValues)
+						);
+						router.push("/");
+					} else if (data.msg === "invalid") {
+						setInvalid(true);
+					} else if (data.msg === "used") {
+						setUsed(true);
+					} else if (data.msg === "refused") {
+						setRefused(true);
+					} else {
+						// Erro
+						setError(true);
+						console.error(
+							"Erro ao cadastrar. Status:",
+							response ? response.status : "unknown"
+						);
+					}
+				} catch (error) {
+					console.error("Erro ao cadastrar:", error);
+				}
+			}
 		}
 	};
+
 	return (
 		<>
 			<main>
@@ -158,6 +286,36 @@ export default function Cadastro() {
 									onChange={handleInputChange}
 									required
 								/>
+								<label htmlFor="especialidade">Especialidade:</label>
+								<input
+									type="text"
+									id="especialidade"
+									name="especialidade"
+									placeholder="Qual é sua especialidade?"
+									value={formValues.especialidade}
+									onChange={handleInputChange}
+									required
+								/>
+								<label htmlFor="unidade">Unidade onde trabalha:</label>
+								<select
+								name="unidade"
+								id="unidade"
+								value={formValues.unidade}
+								onChange={handleInputChange}
+								required
+								>
+								{/* Opções para tipo de unidade */}
+								<option value="" disabled>
+									Escolha uma unidade
+								</option>
+
+								{/* Mapeando a lista de tipos para gerar as opções dinamicamente */}
+								{unidades.map((unidade) => (
+									<option key={unidade.id} value={unidade.id}>
+									{unidade.nome}
+									</option>
+								))}
+								</select>
 							</>
 						)}
 
@@ -166,18 +324,23 @@ export default function Cadastro() {
 							<>
 								<label htmlFor="tipo">Tipo:</label>
 								<select
-									name="tipo"
-									id="tipo"
-									value={formValues.tipo}
-									onChange={handleInputChange}
-									required
+								name="tipo"
+								id="tipo"
+								value={formValues.tipo}
+								onChange={handleInputChange}
+								required
 								>
-									{/* Opções para tipo de hospital */}
-									<option value="" disabled>
-										Escolha um tipo
+								{/* Opções para tipo de unidade */}
+								<option value="" disabled>
+									Escolha um tipo
+								</option>
+
+								{/* Mapeando a lista de tipos para gerar as opções dinamicamente */}
+								{tipos.map((tipo) => (
+									<option key={tipo.id} value={tipo.id}>
+									{tipo.descricao}
 									</option>
-									<option value="Teste">Teste</option>
-									{/* Para essas opções, farei uma lista separada e inserirei aqui uma lógica com for para criar todos os options de uma vez */}
+								))}
 								</select>
 								<label htmlFor="cnes">CNES:</label>
 								<input
@@ -210,7 +373,7 @@ export default function Cadastro() {
 									onChange={handleInputChange}
 									readOnly
 									required
-								// Adicionar estilo, se estiver preenchido fica com fundo fracamente colorido
+									// Adicionar estilo, se estiver preenchido fica com fundo fracamente colorido
 								/>
 								<label htmlFor="cidade">Cidade</label>
 								<input
@@ -221,7 +384,7 @@ export default function Cadastro() {
 									onChange={handleInputChange}
 									readOnly
 									required
-								// Adicionar estilo, se estiver preenchido fica com fundo fracamente colorido
+									// Adicionar estilo, se estiver preenchido fica com fundo fracamente colorido
 								/>
 								<label htmlFor="endereco">Endereço</label>
 								<input
