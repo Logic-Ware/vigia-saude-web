@@ -1,5 +1,4 @@
 "use client";
-// import { IoArrowBack } from 'react-icons/io5'
 import Link from "next/link";
 import { useState , useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -218,11 +217,6 @@ export default function Cadastro() {
 		<>
 			<main>
 				<section>
-					<section>
-						{/* <Link href={'/'}>
-                            <IoArrowBack />
-                        </Link> */}
-					</section>
 					<h1>Faça o seu cadastro</h1>
 					<form action="#" onSubmit={handleSubmit}>
 						<label htmlFor="cadastroSelectCategoria">Categoria</label>
