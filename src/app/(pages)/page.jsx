@@ -6,6 +6,7 @@ export default function Home() {
 			<Link href={"/cadastro"}>Cadastrar</Link>
 			<Link href={"/login"}>Entrar</Link>
 			<Link href={"/consultar-doenca"}>Consultar Doença</Link>
+			<Link href={"/registrar-casos"}>Registrar Casos</Link>
 		</main>
 	);
 }
