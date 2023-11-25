@@ -2,6 +2,7 @@ import { Inter } from "next/font/google";
 import "../styles/App.scss";
 import BarraNav from "@/components/BarraNav/barraNav";
 import Rodape from "@/components/Rodape/rodape";
+import "./page.scss";
 
 const inter = Inter({ subsets: ["latin"] });
 

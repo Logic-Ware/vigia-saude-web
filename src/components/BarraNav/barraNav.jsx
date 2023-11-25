@@ -28,7 +28,7 @@ export default function BarraNav() {
     return (
         <>
         <nav>
-            <Link href="">
+            <Link href="/">
                 <Image
                 width={100}
                 height={100}
