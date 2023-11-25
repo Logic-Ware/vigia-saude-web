@@ -30,8 +30,8 @@ export default function Contato() {
   return (
     <>
       <main>
-        <h2>Contate-nos</h2>
         <fieldset className="formContainer">
+        <h2>Contate-nos</h2>
           <form action="#" onSubmit={handleSubmit}>
             <div className="formGroup">
               <label htmlFor="nome">Nome:</label>
