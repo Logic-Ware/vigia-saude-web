@@ -3,17 +3,15 @@ import Link from "next/link";
 import Image from "next/image";
 import logoVigiaSaude from "/public/logo_vigia_saude.png";
 import "./barraNav.scss"
-import { GiHamburgerMenu as HamburgerIcon } from 'react-icons/gi'
 import { useEffect, useRef, useState } from 'react'
 
 export default function BarraNav() {
-
-
+    
         /**
      * Variável que guarda a referencia do div que contém os links
      * @type {React.MutableRefObject<HTMLDivElement>}
      */
-    const linksDiv = useRef(null)
+        const linksDiv = useRef(null)
 
     /**
      * Variável que guarda a referencia do div que contém o hamburger
@@ -27,23 +25,33 @@ export default function BarraNav() {
             setUser(localStorage.getItem('user'))
         }
     }, [])
-    
-
     return (
         <>
-          <nav>
+        <nav>
             <Link href="">
-              <Image
-                width={50}
-                height={50}
+                <Image
+                width={100}
+                height={100}
                 src={logoVigiaSaude}
                 alt="Logo do Vigia Saúde"
-              />
+                />
             </Link>
-            <div className="links">
-              <Link href="/consultar-doenca">Consultar Doenças</Link>
-              <Link href="/contato">Contato</Link>
-              {!user ? (
+
+            <ul class="lista-nav">
+                <li class="links">
+                    <Link href={'/consultar-doenca'}>Consultar Doença</Link>
+                </li>
+                <li class="links">
+                    <Link href={'/contato'}>Contato</Link>
+                </li>
+                <li class="links">
+                    <Link href={'/registrar-casos'}>Registrar Casos</Link>
+                </li>
+                <li class="links">
+                    <Link href={'/cadastro'}>Cadastrar</Link>
+                </li>
+                <li class="links">
+                {!user ? (
                 <Link href="/login">Entrar</Link>
               ) : (
                 <Link
@@ -57,8 +65,10 @@ export default function BarraNav() {
                   Sair
                 </Link>
               )}
-            </div>
-          </nav>
+                </li>
+                
+            </ul>
+        </nav>
         </>
-      );
+    )
 }

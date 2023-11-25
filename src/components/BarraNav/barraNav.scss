@@ -1,66 +1,55 @@
-nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 20px;
-    background-color: #3498db; /* Cor de fundo do navbar, substitua pela cor desejada */
-  
-    a {
-      color: #fff; /* Cor do texto dos links, substitua pela cor desejada */
-      margin-left: 20px; /* Espaçamento entre os links, ajuste conforme necessário */
-      text-decoration: none;
-      font-weight: bold;
-  
-      &:hover {
-        text-decoration: underline; /* Efeito de sublinhado ao passar o mouse sobre os links */
-      }
-    }
-  
-    div {
-      display: flex;
-      align-items: center;
-  
-      a {
-        margin: 0; /* Remover a margem dos links dentro da div */
-  
-        &:last-child {
-          margin-left: auto; /* Move o último link para a extremidade direita da div */
-        }
-      }
+@use "./src/app/styles/App.scss";
+
+.navbar {
+    &__container {
+        width: 100%;
+        display: flex;
+        padding: 1.2%;
+        height: 8.2%;
+        justify-content: space-between;
+        align-items: center;
     }
 
-    .links {
-        margin: 2rem;
-      
-        a {
-          margin-right: 10px; /* Adicione o espaçamento desejado entre os links */
-          text-decoration: none;
-          color: #000; /* Adicione a cor desejada */
+    &__links {
+        display: flex;
+        justify-content: space-between;
+        width: 65%;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+
+        &__item {
+            margin-left: 1rem; 
+
+            a {
+                text-decoration: none;
+                color: #333; 
+
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
         }
-      }
-  
-      .hamburger {
-        display: none; // Inicialmente, oculta o ícone do hamburger em telas grandes
-    
-        @media (max-width: 768px) {
-          display: flex; // Mostra o ícone do hamburger em telas menores que 768px
-        }
-    
-        cursor: pointer;
-        margin-left: 10px;
-        color: #fff;
-      }
-  }
-  
-  /* Estilos para a classe 'active' */
-  .active {
-    opacity: 1;
-    transition: opacity 0.3s ease;
-  }
-  
-  /* Estilos para a classe 'deactivating' */
-  .deactivating {
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-  
+    }
+
+    &__logo {
+        width: 100px; 
+        height: 100px; 
+    }
+}
+
+nav {
+    @extend .navbar__container;
+}
+
+ul.lista-nav {
+    @extend .navbar__links;
+}
+
+.links {
+    @extend .navbar__links__item;
+}
+
+.navbar img {
+    @extend .navbar__logo;
+}
