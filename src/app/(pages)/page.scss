@@ -1,0 +1,28 @@
+main {
+    display: flex;
+    align-items: center;
+    padding: 1.2%;
+    justify-content: space-around;
+
+  }
+  
+  .text {
+    text-align: center;
+    margin: 20px;
+    padding: 15px;
+    max-width: 500px;
+  
+    p {
+      margin-bottom: 20px;
+    }
+  }
+  
+  .imagem {
+    -webkit-transition: all 0.01s cubic-bezier(.190, 1.000, .220, 1.000);
+    -moz-transition: all 0.01s cubic-bezier(.190, 1.000, .220, 1.000);
+    -ms-transition: all 0.01s cubic-bezier(.190, 1.000, .220, 1.000);
+    -o-transition: all 0.01s cubic-bezier(.190, 1.000, .220, 1.000);
+    transition: all 0.01s cubic-bezier(.190, 1.000, .220, 1.000);
+    display: flex;
+    align-items: end;
+  }
